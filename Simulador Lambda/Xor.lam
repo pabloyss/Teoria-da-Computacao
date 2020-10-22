@@ -1,0 +1,12 @@
+let
+
+true  = \a. \b. a ;
+false = \a. \b. b ;
+if    = \a. \b. \c. a b c ;
+not   = \b. b false true;
+
+xor   = \b1 b2. if b1 (not b2) b2;
+
+in
+
+xor false false

@@ -1,0 +1,53 @@
+let
+
+true   = \a b. a;
+false  = \a b. b;
+if     = \a b c. a b c;
+
+pair   = \a b c. c a b;
+fst    = \p. p true;
+snd    = \p. p false;
+
+Y      = \f. (\x. f (x x)) (\x. f (x x));
+
+empty = \x. true;
+cons  = pair;
+
+head  = fst;
+tail  = snd;
+isEmpty = \l. l (\a b.false);
+
+isZero   = \n. n (\x.false) true;
+succ     = \n. \p q. p (n p q);
+shiftInc = \p. pair (snd p) (succ (snd p));
+pred     = \n. fst (n shiftInc (pair 0 0));
+sub      = \a b. b pred a;
+add      = \n1 n2. n1 succ n2;
+crescente =\a. if (isZero (sub (fst a) (snd a))) 1 0;
+
+S_contaCrescente = \R. \n. if (isEmpty n)
+0 
+(add (crescente (head n)) (R (tail n)));
+
+contaCrescente = Y S_contaCrescente;
+
+S_geralista = \R. \n. if (isZero n)
+empty
+(cons n (R (pred n)));
+
+geraLista = Y S_geralista;
+
+
+Slen = \R. \l. if (isEmpty l)
+0
+(succ (R (tail l)));
+
+len= Y Slen;
+
+in
+
+
+
+
+
+

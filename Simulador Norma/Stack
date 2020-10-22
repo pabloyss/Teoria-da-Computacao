@@ -1,0 +1,89 @@
+ 
+ 1 - 
+a1) (1,(3,3)),(2,(3,3)),(3,(6,6)),(4,(6,3)),(1,(6,2)),(2,(6,2)),(3,(12,4)),(4,(12,2)),(1,(12,1)),(0,(12,1))
+Resultado = 12
+a2) (1,(3,3)),(2,(3,3)),(3,(6,6))),(1,(3,6)),(2,(3,6)),(3,(6,12)),(1,(3,12))...
+A altura continua dobrando em loop
+a3) (0,(3,3))
+Resultado = 9
+
+b1) F(x) = ()
+b2) F(x) = (1, caso x=1)
+           (resto,loop infinito)
+b3) F(x) = 9
+
+c) Não, nenhum programa apresenta equivalência
+ 
+
+
+ 
+2 -  
+Verdadeira, através da codificação 2^x é possível reproduzir todas operações e testes da máquina norma 2. 
+Primeiramente utilizamos a codificação de entrada como f(x) = 2^x.
+
+Os registradores X e Y podem ser facilmente representados pelos registradores A e B (largura e altura).
+As funções da máquina norma2 são incremento e decremento de X e Y e o teste avalia se os registradores são zero.
+
+A representação de decremento da norma2 pode ser satisfeita pelas operações metadeLargura e metadeAltura de RECT,
+já que a divisão por 2 resulta no decremento da potência de 2 (2^x-1).
+
+Para a representação de incremento da norma2, é necessário uma pequena rotina usando 2 operações da RECT, as operações de dobra e metadeAltura ou metadeLargura,
+pois a dobra incrementa a potência dos 2 registradores (2^x+1, 2^x+1), assim será necessário decremententar o outro registrador para retornar ele ao valor inicial.
+Resultando assim no dobro de um registrador que equivale a 2^x+1.
+
+O teste de zero da norma2 é também substituido pelos testes vertical? e horizontal? da máquina RECT, pois eles testam se os registradores A e B são 1,
+se a nossa códificação segue x como uma potência de 2 e com a informação de que 2^0 = 1, então os testes da máquina RECT podem ser substituíveis.
+
+Ao final, é importante deixar os registradores sem o valor de saída em 1 pois a máquina RECT realiza a multiplicação de A e B.
+
+Por fim, utiliza-se a decodificação de saída de F(x) = log2x para completar a simulação.
+
+Assim, chegamos a conclusão que a máquina RECT simula a Norma2, já que podemos reproduzir todas suas operações e testes através
+de uma função de codificação e decodificação.
+
+
+
+
+3 - Aqui algumas operações que eu não achei nas aulas, as outras como divisibilidade, divisão, e gerar o k-ésimo termo conforme a posição, podem ser encontrados nos vídeos
+
+// Multiplicação de A por B
+// A:= A*B (destrutiva)
+operation mult(A,B,D,E,F,G){
+  1: do load(D,A) goto 2
+  2: do load(G,B,F) goto 3
+  3: if zero B then goto 6 else goto 4
+  4: do soma(A,D,E) goto 5
+  5: do dec B goto 3
+  6: do clear(D) goto 7
+  7: do load(B,G) goto 0
+}
+
+// Eleva A por B
+// A:= A^B
+operation pot(A,B,C,H){
+    1: do load(C,A,H) goto 2
+    2: do dec B goto 3
+    3: if zero B then goto 0 else goto 4
+    4: do mult(A,C) goto 5
+    5: do dec B goto 3
+}
+
+1. Para representar uma pilha usaremos 2 registradores A e B, utilizando os conceitos de endereçamento indireto com vistos nas aulas.
+
+O registrador A contém a pilha, codificamos ele usando a multiplicação de potências de números primos, ou seja os números primos 
+marcam as posições do dentro de um array e as potências são os valores armazenados. 
+O registrador B contém o índice da última posição da pilha.
+
+2. Para gerar uma pilha vazia basta incrementar o valor de A para 1, já que a multiplicação de todas potências em 0 resulta em 1.
+
+3. Para empilhar um número na pilha: incrementamos o valor de B para atualizar o topo da pilha, passamos o valor de B para C de forma não-destrutiva,
+geramos o k-ésimo número primo com C (como visto na aula de endereçamento indireto), após isso elevamos o valor de C pelo valor que será adicionado na pilha
+C:= C^X e por fim multiplicamos A por C para adicionar ele na pilha.
+
+4. Para tirar um elemento da pilha, passamos o valor de B para C de forma não-destrutiva, geramos o k-ésimo número primo com C (como visto na aula de endereçamento indireto), 
+após isso testamos se o registrador A é divisivel por C (também presente na aula endereçamento), caso sim dividimos C por A e incrementamos D e repetimos o teste, 
+caso não decrementamos B e O valor no registrador D, será a saída que é o valor do topo da pilha.
+
+5. Para testar se a pilha está simples é bem facil, basta decrementar o valor de B, testar se o valor é zero. caso sim a pilha está vazia, caso não a pilha não está.
+Após o teste incrementa o B para ele voltar ao valor inicial.
+
